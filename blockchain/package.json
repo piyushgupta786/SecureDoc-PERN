@@ -1,0 +1,13 @@
+{
+  "name": "securedoc-blockchain",
+  "version": "1.0.0",
+  "description": "SecureDoc Solidity smart contract compile and deploy scripts",
+  "scripts": {
+    "compile-deploy": "node scripts/compileAndDeploy.js"
+  },
+  "dependencies": {
+    "solc": "^0.8.24",
+    "ethers": "^6.9.0",
+    "dotenv": "^16.3.1"
+  }
+}
