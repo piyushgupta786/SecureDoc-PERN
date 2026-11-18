@@ -1,4 +1,11 @@
-node_modules/
+﻿node_modules/
 .env
 *.log
-securedoc-storage/
+dist/
+securedoc-backend/uploads/*
+!securedoc-backend/uploads/.gitkeep
+
+securedoc-backend/securedoc-storage/*
+!securedoc-backend/securedoc-storage/.gitkeep
+.agents/
+skills-lock.json
