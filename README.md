@@ -7,7 +7,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)
 ![Solidity](https://img.shields.io/badge/Solidity-%5E0.8.24-363636?style=flat-square&logo=solidity&logoColor=white)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Ganache_EVM_1337-3C3C3D?style=flat-square&logo=ethereum&logoColor=white)
-![UI Theme](https://img.shields.io/badge/Hallmark_UI-Swiss_Technical_Editorial-c17d2a?style=flat-square)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
 SecureDoc is a full-stack forensic document integrity, vault, and Ethereum blockchain verification platform built on the **PERN stack** (PostgreSQL, Express.js, React 18, Node.js) with local EVM smart contract anchoring.
 
@@ -33,7 +33,7 @@ Designed for forensic cyber-investigators, legal professionals, and digital audi
 ```mermaid
 graph TB
     subgraph Client ["Frontend SPA (React 18 + Vite + Tailwind)"]
-        UI["Hallmark Swiss Editorial UI\n(LoginPage / Dashboard / CaseWorkspace / AdminUsers)"]
+        UI["React + Tailwind Editorial UI\n(LoginPage / Dashboard / CaseWorkspace / AdminUsers)"]
         AuthCtx["AuthContext.jsx\n(JWT & Role State)"]
         Web3Ctx["Web3Context.jsx\n(MetaMask & Direct RPC Verify)"]
     end
@@ -82,7 +82,7 @@ graph TB
                      v                                                               v
       +-----------------------------+                                 +-----------------------------+
       |      Web3 / MetaMask        |                                 |    React 18 + Vite (SPA)    |
-      |   window.ethereum / ethers  | <=============================> |   Hallmark Swiss Editorial  |
+      |   window.ethereum / ethers  | <=============================> |    Tailwind Editorial UI    |
       +-----------------------------+     Direct RPC Verification     +-----------------------------+
                      |                                                               |
                      |                                                               | HTTP / JSON REST
@@ -287,10 +287,10 @@ SecureDoc-PERN/
     │   │   └── DashboardPage.jsx           # Metric cards, global evidence search & cases table
     │   ├── App.jsx                         # React Router route hierarchy & ProtectedRoute
     │   ├── main.jsx                        # React root bootstrap & toast notification provider
-    │   └── index.css                       # Tailwind directives & Hallmark token definitions
+    │   └── index.css                       # Tailwind directives & custom CSS design tokens
     ├── index.html                          # HTML5 shell loading Inter & IBM Plex Mono fonts
     ├── vite.config.js                      # Vite config with API proxy to port 8080
-    ├── tailwind.config.js                  # Tailwind v3 config extending Hallmark palette
+    ├── tailwind.config.js                  # Tailwind v3 config extending custom color palette
     ├── postcss.config.js                   # PostCSS plugin pipeline (tailwindcss + autoprefixer)
     ├── .env.example                        # Frontend environment variable template
     ├── .env                                # Frontend local environment settings
@@ -478,13 +478,13 @@ mapping(uint256 => DocumentRecord) private documents;
 
 ---
 
-## 🎨 UI Design System: Hallmark "Swiss Technical Editorial"
+## 🎨 UI Design System: Custom Technical Editorial
 
-The frontend interface (`securedoc-frontend`) was constructed using the **Hallmark design system** under the `modern-minimal` genre:
-- **Palette:** High-contrast ink-on-paper (`#1a1917` ink on `#f9f8f6` paper) with a single amber signal accent (`#c17d2a`). Zero purple/blue neon gradients or glowing orbs.
+The frontend interface (`securedoc-frontend`) is engineered with a custom token-driven **Tailwind CSS** architecture focused on clean, distraction-free forensic inspection:
+- **Palette:** High-contrast neutral surfaces with an amber signal accent (`#c17d2a`) and semantic status indicators for verified, off-chain, and tampered states.
 - **Typography:** Google Fonts pairing of **Inter** for clean UI hierarchy and **IBM Plex Mono** for cryptographic proofs, wallet addresses, and SHA-256 hashes.
-- **Craft Details:** Hairline border rules (`#d4d1cb`), instant `:focus-visible` rings on all interactive elements, and `prefers-reduced-motion` fallbacks.
-- **Sloplint Verified:** Audited across all screens, passing with **0 FAIL, 0 REFLEX, 0 WARN**.
+- **Craft Details:** Crisp hairline borders, instant `:focus-visible` rings on all interactive elements, and `prefers-reduced-motion` support.
+- **Accessibility & Contrast:** Verified keyboard navigation, high-contrast legibility, and responsive layouts across all views.
 
 ---
 
