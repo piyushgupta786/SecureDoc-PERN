@@ -1,12 +1,14 @@
-import axios from 'axios'
+﻿import axios from 'axios'
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
 
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 30000,
+  baseURL: `${API_BASE_URL}/api`,
+  timeout: 60000,
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Request interceptor — inject auth token
+// Request interceptor - inject auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('securedoc_token')
@@ -18,14 +20,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Response interceptor — handle 401
+// Response interceptor - handle 401
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('securedoc_token')
       localStorage.removeItem('securedoc_user')
-      // Redirect to login only if not already there
       if (window.location.pathname !== '/login') {
         window.location.href = '/login'
       }
@@ -34,26 +35,26 @@ api.interceptors.response.use(
   }
 )
 
-// ── Auth ───────────────────────────────────────────────────────────────
+// Auth
 export const authApi = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (data) => api.post('/users', data),
 }
 
-// ── Users ──────────────────────────────────────────────────────────────
+// Users
 export const usersApi = {
   getByUsername: (username) => api.get(`/users/username/${username}`),
   updateRole: (username, role) => api.put(`/users/${username}/role`, { role }),
 }
 
-// ── Cases ──────────────────────────────────────────────────────────────
+// Cases
 export const casesApi = {
   getAll: () => api.get('/cases'),
   getByNumber: (caseNumber) => api.get(`/cases/${caseNumber}`),
   create: (data) => api.post('/cases', data),
 }
 
-// ── Documents ─────────────────────────────────────────────────────────
+// Documents
 export const documentsApi = {
   upload: (formData) =>
     api.post('/documents', formData, {
@@ -73,15 +74,15 @@ export const documentsApi = {
     }),
 }
 
-// ── Audit ─────────────────────────────────────────────────────────────
+// Audit
 export const auditApi = {
   getForDocument: (documentId) => api.get(`/audit/document/${documentId}`),
   getSystem: () => api.get('/audit'),
 }
 
-// ── Health ────────────────────────────────────────────────────────────
+// Health
 export const healthApi = {
-  check: () => axios.get('/health', { timeout: 5000 }),
+  check: () => axios.get(`${API_BASE_URL}/health`, { timeout: 15000 }),
 }
 
 export default api
