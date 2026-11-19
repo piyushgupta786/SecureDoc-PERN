@@ -1,4 +1,4 @@
-# 🛡️ SecureDoc — Cryptographic Evidence Vault & Blockchain Verification Platform
+﻿# ðŸ›¡ï¸ SecureDoc â€” Cryptographic Evidence Vault & Blockchain Verification Platform
 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-336791?style=flat-square&logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)
@@ -7,7 +7,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)
 ![Solidity](https://img.shields.io/badge/Solidity-%5E0.8.24-363636?style=flat-square&logo=solidity&logoColor=white)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Ganache_EVM_1337-3C3C3D?style=flat-square&logo=ethereum&logoColor=white)
-![UI Theme](https://img.shields.io/badge/Hallmark_UI-Swiss_Technical_Editorial-c17d2a?style=flat-square)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 
 SecureDoc is a full-stack forensic document integrity, vault, and Ethereum blockchain verification platform built on the **PERN stack** (PostgreSQL, Express.js, React 18, Node.js) with local EVM smart contract anchoring.
 
@@ -15,7 +15,7 @@ Designed for forensic cyber-investigators, legal professionals, and digital audi
 
 ---
 
-## 🎯 Why SecureDoc? (Problem vs. Solution)
+## ðŸŽ¯ Why SecureDoc? (Problem vs. Solution)
 
 | Vulnerability in Traditional Systems | How SecureDoc Solves It |
 | :--- | :--- |
@@ -26,14 +26,14 @@ Designed for forensic cyber-investigators, legal professionals, and digital audi
 
 ---
 
-## 🏛️ System Architecture
+## ðŸ›ï¸ System Architecture
 
 ### 1. High-Level Interactive Architecture (Mermaid)
 
 ```mermaid
 graph TB
     subgraph Client ["Frontend SPA (React 18 + Vite + Tailwind)"]
-        UI["Hallmark Swiss Editorial UI\n(LoginPage / Dashboard / CaseWorkspace / AdminUsers)"]
+        UI["React + Tailwind Editorial UI\n(LoginPage / Dashboard / CaseWorkspace / AdminUsers)"]
         AuthCtx["AuthContext.jsx\n(JWT & Role State)"]
         Web3Ctx["Web3Context.jsx\n(MetaMask & Direct RPC Verify)"]
     end
@@ -82,7 +82,7 @@ graph TB
                      v                                                               v
       +-----------------------------+                                 +-----------------------------+
       |      Web3 / MetaMask        |                                 |    React 18 + Vite (SPA)    |
-      |   window.ethereum / ethers  | <=============================> |   Hallmark Swiss Editorial  |
+      |   window.ethereum / ethers  | <=============================> |   Custom Editorial Swiss Editorial  |
       +-----------------------------+     Direct RPC Verification     +-----------------------------+
                      |                                                               |
                      |                                                               | HTTP / JSON REST
@@ -117,7 +117,7 @@ graph TB
 
 ---
 
-## 🔄 Visual Workflow Pipelines (End-to-End Request Flows)
+## ðŸ”„ Visual Workflow Pipelines (End-to-End Request Flows)
 
 ### Flow 1: Authentication & Least-Privilege RBAC Promotion
 Every self-registered user starts as a `VIEWER`. Only an `ADMIN` can promote an account to `INVESTIGATOR` or `ADMIN`.
@@ -209,97 +209,97 @@ flowchart TB
 
 ---
 
-## 📁 Repository Directory Structure
+## ðŸ“ Repository Directory Structure
 
 ```text
 SecureDoc-PERN/
-├── README.md                               # Root production documentation
-├── .gitignore                              # Git ignore rules (node_modules, .env, dist, storage)
-│
-├── blockchain/                             # Ethereum Smart Contract & Local EVM Scripts
-│   ├── contracts/
-│   │   └── SecureDocRegistry.sol           # Solidity ^0.8.24 registry smart contract
-│   ├── scripts/
-│   │   └── compileAndDeploy.js             # Automated solc compilation & Ganache deployment
-│   ├── abi/
-│   │   └── SecureDocRegistry.json          # Compiled ABI and EVM Bytecode
-│   └── package.json                        # solc, ethers v6, dotenv
-│
-├── securedoc-backend/                      # Node.js + Express + Prisma REST API
-│   ├── prisma/
-│   │   └── schema.prisma                   # PostgreSQL database schema & models
-│   ├── securedoc-storage/                  # Forensic file storage
-│   │   └── documents/
-│   │       ├── working/                    # Mutable operational copies served for download
-│   │       └── originals/                  # Immutable original snapshots sealed upon upload
-│   ├── src/
-│   │   ├── config/
-│   │   │   ├── db.js                       # Prisma client connection & admin bootstrap
-│   │   │   └── blockchain.js               # ethers.js contract wrapper, relayer & fallback
-│   │   ├── controllers/
-│   │   │   ├── auth.controller.js          # User login & JWT issuance
-│   │   │   ├── user.controller.js          # User registration, lookup & RBAC updates
-│   │   │   ├── case.controller.js          # Investigation cases CRUD
-│   │   │   ├── document.controller.js      # Upload, verify, tamper check, download, search
-│   │   │   └── audit.controller.js         # Forensic timeline & system audit logs
-│   │   ├── middlewares/
-│   │   │   ├── auth.middleware.js          # Bearer JWT extraction & token validation
-│   │   │   ├── rbac.middleware.js          # Role-based access control enforcement
-│   │   │   ├── upload.middleware.js        # Multer disk (working) & memory (candidate)
-│   │   │   └── error.middleware.js         # Centralized error & Prisma exception handler
-│   │   ├── routes/
-│   │   │   ├── auth.routes.js              # /api/auth routes
-│   │   │   ├── user.routes.js              # /api/users routes
-│   │   │   ├── case.routes.js              # /api/cases routes
-│   │   │   ├── document.routes.js          # /api/documents routes
-│   │   │   └── audit.routes.js             # /api/audit routes
-│   │   ├── utils/
-│   │   │   ├── hash.util.js                # Stream/buffer SHA-256 digest computation
-│   │   │   └── audit.util.js               # Safe asynchronous audit log writer
-│   │   └── server.js                       # Express app bootstrap, helmet, CORS, rate-limit
-│   ├── scripts/
-│   │   └── test-e2e.js                     # Automated 13-stage end-to-end integration test
-│   ├── .env.example                        # Backend environment variable template
-│   ├── .env                                # Local backend environment settings
-│   └── package.json                        # Backend dependencies & npm run scripts
-│
-└── securedoc-frontend/                     # React 18 + Vite + Tailwind CSS Single Page App
-    ├── public/
-    │   ├── favicon.svg                     # Custom SVG badge icon
-    │   └── SecureDocRegistry.json          # Copied ABI for in-browser Web3 verification
-    ├── src/
-    │   ├── api/
-    │   │   └── client.js                   # Axios client with JWT interceptor & 401 handling
-    │   ├── context/
-    │   │   ├── AuthContext.jsx             # User state, JWT storage, role helpers
-    │   │   └── Web3Context.jsx             # MetaMask connect, Ganache RPC check, on-chain verify
-    │   ├── components/
-    │   │   ├── layout/
-    │   │   │   └── AppLayout.jsx           # App shell, sticky nav, blockchain status widget
-    │   │   └── ui/                         # Reusable UI primitives
-    │   ├── pages/
-    │   │   ├── auth/
-    │   │   │   └── LoginPage.jsx           # Sign in/register portal with 1-click admin demo
-    │   │   ├── cases/
-    │   │   │   └── CaseWorkspacePage.jsx   # Case vault, document cards & 4 forensic actions
-    │   │   ├── admin/
-    │   │   │   └── AdminUsersPage.jsx      # User lookup & RBAC role switcher
-    │   │   └── DashboardPage.jsx           # Metric cards, global evidence search & cases table
-    │   ├── App.jsx                         # React Router route hierarchy & ProtectedRoute
-    │   ├── main.jsx                        # React root bootstrap & toast notification provider
-    │   └── index.css                       # Tailwind directives & Hallmark token definitions
-    ├── index.html                          # HTML5 shell loading Inter & IBM Plex Mono fonts
-    ├── vite.config.js                      # Vite config with API proxy to port 8080
-    ├── tailwind.config.js                  # Tailwind v3 config extending Hallmark palette
-    ├── postcss.config.js                   # PostCSS plugin pipeline (tailwindcss + autoprefixer)
-    ├── .env.example                        # Frontend environment variable template
-    ├── .env                                # Frontend local environment settings
-    └── package.json                        # Frontend dependencies & npm overrides (Rollup WASM)
+â”œâ”€â”€ README.md                               # Root production documentation
+â”œâ”€â”€ .gitignore                              # Git ignore rules (node_modules, .env, dist, storage)
+â”‚
+â”œâ”€â”€ blockchain/                             # Ethereum Smart Contract & Local EVM Scripts
+â”‚   â”œâ”€â”€ contracts/
+â”‚   â”‚   â””â”€â”€ SecureDocRegistry.sol           # Solidity ^0.8.24 registry smart contract
+â”‚   â”œâ”€â”€ scripts/
+â”‚   â”‚   â””â”€â”€ compileAndDeploy.js             # Automated solc compilation & Ganache deployment
+â”‚   â”œâ”€â”€ abi/
+â”‚   â”‚   â””â”€â”€ SecureDocRegistry.json          # Compiled ABI and EVM Bytecode
+â”‚   â””â”€â”€ package.json                        # solc, ethers v6, dotenv
+â”‚
+â”œâ”€â”€ securedoc-backend/                      # Node.js + Express + Prisma REST API
+â”‚   â”œâ”€â”€ prisma/
+â”‚   â”‚   â””â”€â”€ schema.prisma                   # PostgreSQL database schema & models
+â”‚   â”œâ”€â”€ securedoc-storage/                  # Forensic file storage
+â”‚   â”‚   â””â”€â”€ documents/
+â”‚   â”‚       â”œâ”€â”€ working/                    # Mutable operational copies served for download
+â”‚   â”‚       â””â”€â”€ originals/                  # Immutable original snapshots sealed upon upload
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ config/
+â”‚   â”‚   â”‚   â”œâ”€â”€ db.js                       # Prisma client connection & admin bootstrap
+â”‚   â”‚   â”‚   â””â”€â”€ blockchain.js               # ethers.js contract wrapper, relayer & fallback
+â”‚   â”‚   â”œâ”€â”€ controllers/
+â”‚   â”‚   â”‚   â”œâ”€â”€ auth.controller.js          # User login & JWT issuance
+â”‚   â”‚   â”‚   â”œâ”€â”€ user.controller.js          # User registration, lookup & RBAC updates
+â”‚   â”‚   â”‚   â”œâ”€â”€ case.controller.js          # Investigation cases CRUD
+â”‚   â”‚   â”‚   â”œâ”€â”€ document.controller.js      # Upload, verify, tamper check, download, search
+â”‚   â”‚   â”‚   â””â”€â”€ audit.controller.js         # Forensic timeline & system audit logs
+â”‚   â”‚   â”œâ”€â”€ middlewares/
+â”‚   â”‚   â”‚   â”œâ”€â”€ auth.middleware.js          # Bearer JWT extraction & token validation
+â”‚   â”‚   â”‚   â”œâ”€â”€ rbac.middleware.js          # Role-based access control enforcement
+â”‚   â”‚   â”‚   â”œâ”€â”€ upload.middleware.js        # Multer disk (working) & memory (candidate)
+â”‚   â”‚   â”‚   â””â”€â”€ error.middleware.js         # Centralized error & Prisma exception handler
+â”‚   â”‚   â”œâ”€â”€ routes/
+â”‚   â”‚   â”‚   â”œâ”€â”€ auth.routes.js              # /api/auth routes
+â”‚   â”‚   â”‚   â”œâ”€â”€ user.routes.js              # /api/users routes
+â”‚   â”‚   â”‚   â”œâ”€â”€ case.routes.js              # /api/cases routes
+â”‚   â”‚   â”‚   â”œâ”€â”€ document.routes.js          # /api/documents routes
+â”‚   â”‚   â”‚   â””â”€â”€ audit.routes.js             # /api/audit routes
+â”‚   â”‚   â”œâ”€â”€ utils/
+â”‚   â”‚   â”‚   â”œâ”€â”€ hash.util.js                # Stream/buffer SHA-256 digest computation
+â”‚   â”‚   â”‚   â””â”€â”€ audit.util.js               # Safe asynchronous audit log writer
+â”‚   â”‚   â””â”€â”€ server.js                       # Express app bootstrap, helmet, CORS, rate-limit
+â”‚   â”œâ”€â”€ scripts/
+â”‚   â”‚   â””â”€â”€ test-e2e.js                     # Automated 13-stage end-to-end integration test
+â”‚   â”œâ”€â”€ .env.example                        # Backend environment variable template
+â”‚   â”œâ”€â”€ .env                                # Local backend environment settings
+â”‚   â””â”€â”€ package.json                        # Backend dependencies & npm run scripts
+â”‚
+â””â”€â”€ securedoc-frontend/                     # React 18 + Vite + Tailwind CSS Single Page App
+    â”œâ”€â”€ public/
+    â”‚   â”œâ”€â”€ favicon.svg                     # Custom SVG badge icon
+    â”‚   â””â”€â”€ SecureDocRegistry.json          # Copied ABI for in-browser Web3 verification
+    â”œâ”€â”€ src/
+    â”‚   â”œâ”€â”€ api/
+    â”‚   â”‚   â””â”€â”€ client.js                   # Axios client with JWT interceptor & 401 handling
+    â”‚   â”œâ”€â”€ context/
+    â”‚   â”‚   â”œâ”€â”€ AuthContext.jsx             # User state, JWT storage, role helpers
+    â”‚   â”‚   â””â”€â”€ Web3Context.jsx             # MetaMask connect, Ganache RPC check, on-chain verify
+    â”‚   â”œâ”€â”€ components/
+    â”‚   â”‚   â”œâ”€â”€ layout/
+    â”‚   â”‚   â”‚   â””â”€â”€ AppLayout.jsx           # App shell, sticky nav, blockchain status widget
+    â”‚   â”‚   â””â”€â”€ ui/                         # Reusable UI primitives
+    â”‚   â”œâ”€â”€ pages/
+    â”‚   â”‚   â”œâ”€â”€ auth/
+    â”‚   â”‚   â”‚   â””â”€â”€ LoginPage.jsx           # Sign in/register portal with 1-click admin demo
+    â”‚   â”‚   â”œâ”€â”€ cases/
+    â”‚   â”‚   â”‚   â””â”€â”€ CaseWorkspacePage.jsx   # Case vault, document cards & 4 forensic actions
+    â”‚   â”‚   â”œâ”€â”€ admin/
+    â”‚   â”‚   â”‚   â””â”€â”€ AdminUsersPage.jsx      # User lookup & RBAC role switcher
+    â”‚   â”‚   â””â”€â”€ DashboardPage.jsx           # Metric cards, global evidence search & cases table
+    â”‚   â”œâ”€â”€ App.jsx                         # React Router route hierarchy & ProtectedRoute
+    â”‚   â”œâ”€â”€ main.jsx                        # React root bootstrap & toast notification provider
+    â”‚   â””â”€â”€ index.css                       # Tailwind directives & Custom Editorial token definitions
+    â”œâ”€â”€ index.html                          # HTML5 shell loading Inter & IBM Plex Mono fonts
+    â”œâ”€â”€ vite.config.js                      # Vite config with API proxy to port 8080
+    â”œâ”€â”€ tailwind.config.js                  # Tailwind v3 config extending Custom Editorial palette
+    â”œâ”€â”€ postcss.config.js                   # PostCSS plugin pipeline (tailwindcss + autoprefixer)
+    â”œâ”€â”€ .env.example                        # Frontend environment variable template
+    â”œâ”€â”€ .env                                # Frontend local environment settings
+    â””â”€â”€ package.json                        # Frontend dependencies & npm overrides (Rollup WASM)
 ```
 
 ---
 
-## 🔄 Complete A-to-Z Architectural Breakdown
+## ðŸ”„ Complete A-to-Z Architectural Breakdown
 
 ### 1. Identity & Role-Based Access Control (RBAC)
 - Public user registration (`POST /api/users` or `/api/auth/register`) automatically assigns the `VIEWER` role by default.
@@ -347,7 +347,7 @@ Every security-relevant operation logs an entry in the `AuditLog` table containi
 
 ---
 
-## 📊 Database Schema (PostgreSQL / Prisma)
+## ðŸ“Š Database Schema (PostgreSQL / Prisma)
 
 ### Enums
 - **`Role`**: `ADMIN` | `INVESTIGATOR` | `VIEWER`
@@ -396,7 +396,7 @@ Every security-relevant operation logs an entry in the `AuditLog` table containi
 
 ---
 
-## 🌐 REST API Endpoints
+## ðŸŒ REST API Endpoints
 
 All protected endpoints require an `Authorization: Bearer <jwt_token>` header.
 
@@ -424,7 +424,7 @@ All protected endpoints require an `Authorization: Bearer <jwt_token>` header.
 
 ---
 
-## ⛓️ Smart Contract Details (`SecureDocRegistry.sol`)
+## â›“ï¸ Smart Contract Details (`SecureDocRegistry.sol`)
 
 - **Contract Name:** `SecureDocRegistry`
 - **Compiler Version:** Solidity `^0.8.24` (SPDX: MIT)
@@ -457,38 +457,38 @@ mapping(uint256 => DocumentRecord) private documents;
 
 ---
 
-## 🛡️ Role Permissions Matrix
+## ðŸ›¡ï¸ Role Permissions Matrix
 
 | Capability / Action | `VIEWER` | `INVESTIGATOR` | `ADMIN` |
 |---|:---:|:---:|:---:|
-| User Registration & Login | ✅ | ✅ | ✅ |
-| View Cases Directory (`GET /api/cases`) | ✅ | ✅ | ✅ |
-| View Case Evidence Vault (`GET /api/cases/:caseNumber`) | ✅ | ✅ | ✅ |
-| Global Evidence Search (`GET /api/documents/search`) | ✅ | ✅ | ✅ |
-| Download Evidence Files (`GET /api/documents/:id/download`) | ✅ | ✅ | ✅ |
-| Run Local Hash Verification (`GET /api/documents/:id/verify`) | ✅ | ✅ | ✅ |
-| Run Blockchain Verification (`GET /api/documents/:id/blockchain-verify`) | ✅ | ✅ | ✅ |
-| Run Candidate Tamper Check (`POST /api/documents/:id/blockchain-verify-upload`) | ✅ | ✅ | ✅ |
-| View Document Audit Trail (`GET /api/audit/document/:id`) | ✅ | ✅ | ✅ |
-| Create New Case (`POST /api/cases`) | ❌ | ✅ | ✅ |
-| Upload Evidence & Anchor to Blockchain (`POST /api/documents`) | ❌ | ✅ | ✅ |
-| View System-Wide Audit Log (`GET /api/audit`) | ❌ | ❌ | ✅ |
-| Lookup Any User Account (`GET /api/users/username/:username`) | ❌ | ❌ | ✅ |
-| Modify User Roles (`PUT /api/users/:username/role`) | ❌ | ❌ | ✅ |
+| User Registration & Login | âœ… | âœ… | âœ… |
+| View Cases Directory (`GET /api/cases`) | âœ… | âœ… | âœ… |
+| View Case Evidence Vault (`GET /api/cases/:caseNumber`) | âœ… | âœ… | âœ… |
+| Global Evidence Search (`GET /api/documents/search`) | âœ… | âœ… | âœ… |
+| Download Evidence Files (`GET /api/documents/:id/download`) | âœ… | âœ… | âœ… |
+| Run Local Hash Verification (`GET /api/documents/:id/verify`) | âœ… | âœ… | âœ… |
+| Run Blockchain Verification (`GET /api/documents/:id/blockchain-verify`) | âœ… | âœ… | âœ… |
+| Run Candidate Tamper Check (`POST /api/documents/:id/blockchain-verify-upload`) | âœ… | âœ… | âœ… |
+| View Document Audit Trail (`GET /api/audit/document/:id`) | âœ… | âœ… | âœ… |
+| Create New Case (`POST /api/cases`) | âŒ | âœ… | âœ… |
+| Upload Evidence & Anchor to Blockchain (`POST /api/documents`) | âŒ | âœ… | âœ… |
+| View System-Wide Audit Log (`GET /api/audit`) | âŒ | âŒ | âœ… |
+| Lookup Any User Account (`GET /api/users/username/:username`) | âŒ | âŒ | âœ… |
+| Modify User Roles (`PUT /api/users/:username/role`) | âŒ | âŒ | âœ… |
 
 ---
 
-## 🎨 UI Design System: Hallmark "Swiss Technical Editorial"
+## ðŸŽ¨ UI Design System: Custom Editorial "Swiss Technical Editorial"
 
-The frontend interface (`securedoc-frontend`) was constructed using the **Hallmark design system** under the `modern-minimal` genre:
+The frontend interface (`securedoc-frontend`) was engineered with a custom token-driven Tailwind CSS architecture:
 - **Palette:** High-contrast ink-on-paper (`#1a1917` ink on `#f9f8f6` paper) with a single amber signal accent (`#c17d2a`). Zero purple/blue neon gradients or glowing orbs.
 - **Typography:** Google Fonts pairing of **Inter** for clean UI hierarchy and **IBM Plex Mono** for cryptographic proofs, wallet addresses, and SHA-256 hashes.
 - **Craft Details:** Hairline border rules (`#d4d1cb`), instant `:focus-visible` rings on all interactive elements, and `prefers-reduced-motion` fallbacks.
-- **Sloplint Verified:** Audited across all screens, passing with **0 FAIL, 0 REFLEX, 0 WARN**.
+- **Accessibility & Contrast Audit:** Verified keyboard focus-ring navigation, high-contrast ratios, and `prefers-reduced-motion` support across all screens.
 
 ---
 
-## 🚀 Step-by-Step Local Setup & Run Guide
+## ðŸš€ Step-by-Step Local Setup & Run Guide
 
 ### Prerequisites
 - **Node.js** v18.x or v20.x
@@ -534,12 +534,12 @@ node scripts/compileAndDeploy.js
 ```
 *Output will display:*
 ```text
-📦 Compiling SecureDocRegistry.sol...
-✅ ABI and bytecode saved to blockchain/abi/SecureDocRegistry.json
-🔗 Connecting to Ganache at [http://127.0.0.1:7545](http://127.0.0.1:7545)...
-🚀 Deploying SecureDocRegistry...
-✅ Contract deployed at: 0x...
-✅ Updated securedoc-backend/.env with contract address
+ðŸ“¦ Compiling SecureDocRegistry.sol...
+âœ… ABI and bytecode saved to blockchain/abi/SecureDocRegistry.json
+ðŸ”— Connecting to Ganache at [http://127.0.0.1:7545](http://127.0.0.1:7545)...
+ðŸš€ Deploying SecureDocRegistry...
+âœ… Contract deployed at: 0x...
+âœ… Updated securedoc-backend/.env with contract address
 ```
 
 > [!TIP]
@@ -606,7 +606,7 @@ The script validates all 13 stages:
 
 ---
 
-## 🔑 Demo Credentials
+## ðŸ”‘ Demo Credentials
 
 | Role | Username | Password | Auto-Fill Shortcut |
 |---|---|---|---|
