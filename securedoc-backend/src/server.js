@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -18,12 +18,36 @@ const auditRoutes = require('./routes/audit.routes');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.set('trust proxy', 1);
+
+const envOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((item) => {
+    const trimmed = item.trim();
+    const match = trimmed.match(/https?:\/\/[^\s\])"']+/);
+    return (match ? match[0] : trimmed).replace(/\/$/, '');
+  })
+  .filter(Boolean);
+
+const allowedOrigins = Array.from(
+  new Set([
+    ...envOrigins,
+    'https://secure-doc-pern.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:8080'
+  ])
+);
+
 // Security middlewares
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',')
-    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080'],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin.replace(/\/$/, '')) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -84,7 +108,7 @@ async function start() {
       console.log('='.repeat(50));
     });
   } catch (err) {
-    console.error('❌ Failed to start server:', err.message);
+    console.error('Failed to start server:', err.message);
     process.exit(1);
   }
 }
