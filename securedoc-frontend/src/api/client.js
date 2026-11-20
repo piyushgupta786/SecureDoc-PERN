@@ -1,6 +1,10 @@
 ﻿import axios from 'axios'
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const rawUrl = (import.meta.env.VITE_API_BASE_URL || '').trim()
+const urlMatch = rawUrl.match(/https?:\/\/[^\s\])"']+/)
+const API_BASE_URL = (
+  urlMatch ? urlMatch[0] : (import.meta.env.PROD ? 'https://securedoc-pern.onrender.com' : '')
+).replace(/\/$/, '')
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
@@ -8,7 +12,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Request interceptor - inject auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('securedoc_token')
@@ -20,7 +23,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Response interceptor - handle 401
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -35,26 +37,22 @@ api.interceptors.response.use(
   }
 )
 
-// Auth
 export const authApi = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (data) => api.post('/users', data),
 }
 
-// Users
 export const usersApi = {
   getByUsername: (username) => api.get(`/users/username/${username}`),
   updateRole: (username, role) => api.put(`/users/${username}/role`, { role }),
 }
 
-// Cases
 export const casesApi = {
   getAll: () => api.get('/cases'),
   getByNumber: (caseNumber) => api.get(`/cases/${caseNumber}`),
   create: (data) => api.post('/cases', data),
 }
 
-// Documents
 export const documentsApi = {
   upload: (formData) =>
     api.post('/documents', formData, {
@@ -74,13 +72,11 @@ export const documentsApi = {
     }),
 }
 
-// Audit
 export const auditApi = {
   getForDocument: (documentId) => api.get(`/audit/document/${documentId}`),
   getSystem: () => api.get('/audit'),
 }
 
-// Health
 export const healthApi = {
   check: () => axios.get(`${API_BASE_URL}/health`, { timeout: 15000 }),
 }
