@@ -1,39 +1,47 @@
-const { ethers } = require('ethers');
+﻿const { ethers } = require('ethers');
 const fs = require('fs');
 const path = require('path');
 
-const ABI_PATH = path.join(__dirname, '../../../blockchain/abi/SecureDocRegistry.json');
+const LOCAL_ABI_PATH = path.join(__dirname, 'SecureDocRegistry.json');
+const FALLBACK_ABI_PATH = path.join(__dirname, '../../../blockchain/abi/SecureDocRegistry.json');
 
 let provider = null;
 let contract = null;
 let signer = null;
 
+function cleanEnv(val) {
+  if (!val) return '';
+  const trimmed = val.trim();
+  const match = trimmed.match(/https?:\/\/[^\s\])"']+/);
+  return match ? match[0] : trimmed;
+}
+
 function loadABI() {
   try {
-    if (!fs.existsSync(ABI_PATH)) {
-      console.warn('⚠️  Blockchain ABI not found. Run compile/deploy script first.');
+    const abiPath = fs.existsSync(LOCAL_ABI_PATH) ? LOCAL_ABI_PATH : FALLBACK_ABI_PATH;
+    if (!fs.existsSync(abiPath)) {
+      console.warn('Blockchain ABI not found at:', abiPath);
       return null;
     }
-    const data = JSON.parse(fs.readFileSync(ABI_PATH, 'utf8'));
-    return data;
+    return JSON.parse(fs.readFileSync(abiPath, 'utf8'));
   } catch (err) {
-    console.warn('⚠️  Failed to load blockchain ABI:', err.message);
+    console.warn('Failed to load blockchain ABI:', err.message);
     return null;
   }
 }
 
 function initBlockchain() {
   if (process.env.BLOCKCHAIN_ENABLED !== 'true') {
-    console.log('ℹ️  Blockchain integration disabled (BLOCKCHAIN_ENABLED=false)');
+    console.log('Blockchain integration disabled (BLOCKCHAIN_ENABLED!=true)');
     return false;
   }
 
-  const rpcUrl = process.env.BLOCKCHAIN_RPC_URL || 'http://127.0.0.1:7545';
-  const contractAddress = process.env.BLOCKCHAIN_CONTRACT_ADDRESS;
-  const privateKey = process.env.BLOCKCHAIN_PRIVATE_KEY;
+  const rpcUrl = cleanEnv(process.env.BLOCKCHAIN_RPC_URL) || 'https://ethereum-sepolia-rpc.publicnode.com';
+  const contractAddress = (process.env.BLOCKCHAIN_CONTRACT_ADDRESS || '').trim();
+  let privateKey = (process.env.BLOCKCHAIN_PRIVATE_KEY || '').trim();
 
-  if (!contractAddress || contractAddress.trim() === '') {
-    console.warn('⚠️  BLOCKCHAIN_CONTRACT_ADDRESS not set. Blockchain features disabled.');
+  if (!contractAddress) {
+    console.warn('BLOCKCHAIN_CONTRACT_ADDRESS not set. Blockchain features disabled.');
     return false;
   }
 
@@ -42,14 +50,15 @@ function initBlockchain() {
 
   try {
     provider = new ethers.JsonRpcProvider(rpcUrl);
-    if (privateKey && privateKey.trim() !== '') {
+    if (privateKey) {
+      if (!privateKey.startsWith('0x')) privateKey = '0x' + privateKey;
       signer = new ethers.Wallet(privateKey, provider);
     }
     contract = new ethers.Contract(contractAddress, abiData.abi, signer || provider);
-    console.log(`✅ Blockchain initialized. Contract: ${contractAddress}`);
+    console.log(`Blockchain initialized on ${rpcUrl}. Contract: ${contractAddress}, Signer: ${signer ? signer.address : 'none'}`);
     return true;
   } catch (err) {
-    console.warn('⚠️  Blockchain initialization failed:', err.message);
+    console.warn('Blockchain initialization failed:', err.message);
     return false;
   }
 }
@@ -89,17 +98,13 @@ async function getHashFromChain(documentId) {
   if (!contract) {
     throw new Error('Blockchain not initialized');
   }
-  try {
-    const [fileHash, registeredBy, registeredAt, exists] = await contract.getDocument(documentId);
-    return {
-      exists,
-      onChainHash: exists ? bytes32ToHex(fileHash) : null,
-      registeredBy,
-      registeredAt: exists ? Number(registeredAt) : null
-    };
-  } catch (err) {
-    throw err;
-  }
+  const [fileHash, registeredBy, registeredAt, exists] = await contract.getDocument(documentId);
+  return {
+    exists,
+    onChainHash: exists ? bytes32ToHex(fileHash) : null,
+    registeredBy,
+    registeredAt: exists ? Number(registeredAt) : null
+  };
 }
 
 function isBlockchainReady() {

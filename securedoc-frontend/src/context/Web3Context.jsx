@@ -1,24 +1,22 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+﻿import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 
 const Web3Context = createContext(null)
 
-const GANACHE_RPC = 'http://127.0.0.1:7545'
-const GANACHE_CHAIN_ID = 1337
-
-// ABI path relative — will be fetched from public folder
+const SEPOLIA_RPC = (import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://ethereum-sepolia-rpc.publicnode.com').trim()
+const SEPOLIA_CHAIN_ID = 11155111
+const SEPOLIA_CHAIN_HEX = '0xaa36a7'
 const ABI_URL = '/SecureDocRegistry.json'
 
 export function Web3Provider({ children }) {
   const [walletAddress, setWalletAddress] = useState(null)
-  const [networkStatus, setNetworkStatus] = useState('Checking...')
+  const [networkStatus, setNetworkStatus] = useState('Connecting Sepolia...')
   const [contractAddress, setContractAddress] = useState('')
   const [contract, setContract] = useState(null)
   const [provider, setProvider] = useState(null)
   const [isConnected, setIsConnected] = useState(false)
   const [abiData, setAbiData] = useState(null)
 
-  // Load ABI from public folder
   useEffect(() => {
     fetch(ABI_URL)
       .then(r => r.json())
@@ -26,21 +24,15 @@ export function Web3Provider({ children }) {
       .catch(() => console.warn('SecureDocRegistry ABI not found in public/'))
   }, [])
 
-  // Check Ganache status on mount
-  useEffect(() => {
-    checkGanacheStatus()
-  }, [abiData])
-
-  async function checkGanacheStatus() {
+  const checkNetworkStatus = useCallback(async () => {
     try {
-      const p = new ethers.JsonRpcProvider(GANACHE_RPC)
+      const p = new ethers.JsonRpcProvider(SEPOLIA_RPC)
       const network = await p.getNetwork()
-      if (Number(network.chainId) === GANACHE_CHAIN_ID) {
-        setNetworkStatus('Ganache #1337 — Connected')
+      if (Number(network.chainId) === SEPOLIA_CHAIN_ID) {
+        setNetworkStatus('Sepolia #11155111 — Connected')
         setIsConnected(true)
         setProvider(p)
-        // Try to load contract
-        const storedAddr = import.meta.env.VITE_CONTRACT_ADDRESS || ''
+        const storedAddr = (import.meta.env.VITE_CONTRACT_ADDRESS || '').trim()
         if (storedAddr && abiData?.abi) {
           const c = new ethers.Contract(storedAddr, abiData.abi, p)
           setContract(c)
@@ -51,10 +43,14 @@ export function Web3Provider({ children }) {
         setIsConnected(false)
       }
     } catch {
-      setNetworkStatus('Ganache — Offline')
+      setNetworkStatus('Sepolia — Offline')
       setIsConnected(false)
     }
-  }
+  }, [abiData])
+
+  useEffect(() => {
+    checkNetworkStatus()
+  }, [checkNetworkStatus])
 
   const connectWallet = useCallback(async () => {
     if (!window.ethereum) {
@@ -64,21 +60,21 @@ export function Web3Provider({ children }) {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       const chainId = await window.ethereum.request({ method: 'eth_chainId' })
-      if (parseInt(chainId, 16) !== GANACHE_CHAIN_ID) {
+      if (parseInt(chainId, 16) !== SEPOLIA_CHAIN_ID) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x' + GANACHE_CHAIN_ID.toString(16) }],
+            params: [{ chainId: SEPOLIA_CHAIN_HEX }],
           })
         } catch {
-          setNetworkStatus('Switch to Ganache #1337 in MetaMask')
+          setNetworkStatus('Switch to Sepolia in MetaMask')
           return
         }
       }
       const browserProvider = new ethers.BrowserProvider(window.ethereum)
       const signer = await browserProvider.getSigner()
       setWalletAddress(accounts[0])
-      setNetworkStatus('MetaMask — Ganache #1337')
+      setNetworkStatus('MetaMask — Sepolia #11155111')
       setIsConnected(true)
       setProvider(browserProvider)
       if (contractAddress && abiData?.abi) {
@@ -112,7 +108,7 @@ export function Web3Provider({ children }) {
       provider,
       connectWallet,
       verifyOnChain,
-      checkGanacheStatus,
+      checkGanacheStatus: checkNetworkStatus,
     }}>
       {children}
     </Web3Context.Provider>
